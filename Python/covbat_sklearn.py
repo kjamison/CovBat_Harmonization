@@ -205,6 +205,7 @@ def _covbat_fit(data: pd.DataFrame, batch, model=None,
     if n_pc > 0:
         npc = n_pc
 
+    final_pct_var=np.round(var_exp[npc - 1],decimals=4)
     # ── CovBat: ComBat (no EB) on the leading PC scores ─────────────────────
     scores = full_scores.loc[range(npc), :]
     scores_corrected, score_params = _combat_scores_fit(scores, batch)
@@ -241,6 +242,7 @@ def _covbat_fit(data: pd.DataFrame, batch, model=None,
         scaler               = scaler,
         pca                  = pca,
         npc                  = npc,
+        final_pct_var        = final_pct_var,
         # Score ComBat parameters
         score_params         = score_params,
         # Metadata for rebuilding design matrix on new data
@@ -396,6 +398,7 @@ class CovBatHarmonizer(BaseEstimator, TransformerMixin):
 
         self.params_: Optional[dict] = None
         self.npc_: Optional[int] = None
+        self.final_pct_var_: Optional[float] = None
         self.feat_mask_: Optional[np.ndarray] = None
         self.is_fitted_: bool = False
 
@@ -423,6 +426,7 @@ class CovBatHarmonizer(BaseEstimator, TransformerMixin):
         )
         self.params_    = params
         self.npc_       = params["npc"]
+        self.final_pct_var_ = params["final_pct_var"]
         self.feat_mask_ = params["feat_mask"]
         self.is_fitted_ = True
         return self
@@ -443,6 +447,7 @@ class CovBatHarmonizer(BaseEstimator, TransformerMixin):
         )
         self.params_    = params
         self.npc_       = params["npc"]
+        self.final_pct_var_ = params["final_pct_var"]
         self.feat_mask_ = params["feat_mask"]
         self.is_fitted_ = True
         return corrected
@@ -569,5 +574,5 @@ class CovBatHarmonizer(BaseEstimator, TransformerMixin):
         return x_covbat
 
     def __repr__(self) -> str:
-        status = f", npc_={self.npc_}" if self.is_fitted_ else " [not fitted]"
+        status = f", npc_={self.npc_}, final_pct_var_={self.final_pct_var_}" if self.is_fitted_ else " [not fitted]"
         return f"CovBatHarmonizer(pct_var={self.pct_var}, n_pc={self.n_pc}{status})"
