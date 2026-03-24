@@ -6,3 +6,8 @@
 Python/*.txt
 *.DS_Store
 .Rproj.user
+.vscode/
+Python/__pycache__/
+Python/*.pyc
+Python/*.pyo
+Python/.ipynb_checkpoints/
