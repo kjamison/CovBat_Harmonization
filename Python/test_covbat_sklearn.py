@@ -19,7 +19,7 @@ mod = patsy.dmatrix("~ age + cancer", pheno, return_type="dataframe")
 #### CovBat test ####
 # record time
 t = time.time()
-ebat = cb.covbat(dat, pheno['batch'], mod, "age")
+ebat = cb.covbat(dat, pheno['batch'], mod, "age",pct_var=0.95, n_pc=0)
 
 sys.stdout.write("covbat() took %.2f seconds\n" % (time.time() - t))
 
@@ -30,6 +30,8 @@ sys.stdout.write(str(ebat.iloc[:5, :5])+"\n")
 t = time.time()
 harmonizer = CovBatHarmonizer(pct_var=0.95, n_pc=0, numerical_covariates="age")
 ebat_sklearn = harmonizer.fit_transform(dat, pheno['batch'], mod)
+
+print(harmonizer)
 
 sys.stdout.write("CovBatHarmonizer took %.2f seconds\n" % (time.time() - t))
 
