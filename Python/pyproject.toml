@@ -1,0 +1,13 @@
+[project]
+name = "covbat"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+dependencies = [
+    "numpy>=1.22",
+    "scipy>=1.8",
+    "pandas>=1.5",
+    "scikit-learn>=1.2",
+    "patsy>=0.5",
+    "packaging"
+]
