@@ -201,11 +201,15 @@ def _covbat_fit(data: pd.DataFrame, batch, model=None,
     full_scores.columns = data.columns
 
     var_exp = np.cumsum(np.round(pca.explained_variance_ratio_, decimals=4))
-    npc = int(np.min(np.where(var_exp > pct_var))) + 1
+    if pct_var >= 1.0:
+        npc = pca.n_components_
+    else:
+        npc = int(np.min(np.where(var_exp > pct_var))) + 1
     if n_pc > 0:
         npc = n_pc
 
-    final_pct_var=np.round(var_exp[npc - 1],decimals=4)
+    final_pct_var=np.round(np.cumsum(pca.explained_variance_ratio_)[npc-1], decimals=4)
+
     # ── CovBat: ComBat (no EB) on the leading PC scores ─────────────────────
     scores = full_scores.loc[range(npc), :]
     scores_corrected, score_params = _combat_scores_fit(scores, batch)
